@@ -1,0 +1,7 @@
+C:\Users\tugushevaai\Desktop\gtaph0\gtaph0\bin\Debug\gtaph0.exe.config
+C:\Users\tugushevaai\Desktop\gtaph0\gtaph0\bin\Debug\gtaph0.exe
+C:\Users\tugushevaai\Desktop\gtaph0\gtaph0\bin\Debug\gtaph0.pdb
+C:\Users\tugushevaai\Desktop\gtaph0\gtaph0\obj\Debug\gtaph0.csproj.AssemblyReference.cache
+C:\Users\tugushevaai\Desktop\gtaph0\gtaph0\obj\Debug\gtaph0.csproj.CoreCompileInputs.cache
+C:\Users\tugushevaai\Desktop\gtaph0\gtaph0\obj\Debug\gtaph0.exe
+C:\Users\tugushevaai\Desktop\gtaph0\gtaph0\obj\Debug\gtaph0.pdb
