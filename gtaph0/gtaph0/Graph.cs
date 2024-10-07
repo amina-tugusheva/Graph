@@ -10,15 +10,16 @@ namespace gtaph0
     class Graph<T>
     {
         private Dictionary<T, List<(T, double)>> adjacencyList;
+        private bool isDirected;
 
-        public Graph()
+        public Graph(bool isDirected = true)
         {
             adjacencyList = new Dictionary<T, List<(T, double)>>();
+            this.isDirected = isDirected;
         }
 
-        public Graph(string filePath)
+        public Graph(string filePath, bool isDirected = true) : this(isDirected)
         {
-            adjacencyList = new Dictionary<T, List<(T, double)>>();
             LoadFromFile(filePath);
         }
 
@@ -29,6 +30,7 @@ namespace gtaph0
             {
                 adjacencyList[vertex.Key] = new List<(T, double)>(vertex.Value);
             }
+            isDirected = other.isDirected;
         }
 
         public void AddVertex(T vertex)
@@ -39,7 +41,7 @@ namespace gtaph0
             }
             else
             {
-                Console.WriteLine("Вершина уже существует.");
+                Console.WriteLine("такая вершина уже существует");
             }
         }
 
@@ -47,18 +49,24 @@ namespace gtaph0
         {
             if (!adjacencyList.ContainsKey(from) || !adjacencyList.ContainsKey(to))
             {
-                Console.WriteLine("Одна или обе вершины не существуют");
+                Console.WriteLine("одна или обе вершины не существуют");
                 return;
             }
 
             adjacencyList[from].Add((to, weight));
+
+            // Если граф неориентированный, добавляем обратное ребро
+            if (!isDirected)
+            {
+                adjacencyList[to].Add((from, weight));
+            }
         }
 
         public void RemoveVertex(T vertex)
         {
             if (!adjacencyList.ContainsKey(vertex))
             {
-                Console.WriteLine("Вершина не существует");
+                //Console.WriteLine("Вершина не существует");
                 return;
             }
 
@@ -73,11 +81,17 @@ namespace gtaph0
         {
             if (!adjacencyList.ContainsKey(from))
             {
-                Console.WriteLine("Первая вершина не существует");
+                Console.WriteLine("From vertex does not exist.");
                 return;
             }
 
             adjacencyList[from].RemoveAll(e => e.Item1.Equals(to));
+
+            // Если граф неориентированный, удаляем обратное ребро
+            if (!isDirected)
+            {
+                adjacencyList[to].RemoveAll(e => e.Item1.Equals(from));
+            }
         }
 
         public void SaveToFile(string filePath)
@@ -93,7 +107,7 @@ namespace gtaph0
 
         private void LoadFromFile(string filePath)
         {
-            using (StreamReader reader = new StreamReader(/*@"C:\Users\tugushevaai\Desktop\gtaph0\graph.txt"*/filePath))
+            using (StreamReader reader = new StreamReader(filePath))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
