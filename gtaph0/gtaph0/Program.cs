@@ -11,61 +11,102 @@ namespace gtaph0
     {
         static void Main(string[] args)
         {
-            Graph<string> graph = new Graph<string>();
+            Console.Write("Выберите тип графа:\n1. Ориентированный\n2. Неориентированный\nВведите номер: ");
+            var graphTypeInput = Console.ReadLine();
+            bool isDirected = graphTypeInput == "1";
 
+            var graph = new Graph<string>(isDirected); // Создаем граф в зависимости от выбора пользователя
+            
             // Добавление вершин
             graph.AddVertex("A");
             graph.AddVertex("B");
             graph.AddVertex("C");
+            graph.AddVertex("D");
 
             // Добавление рёбер
-            graph.AddEdge("A", "B", 2.5);
+            graph.AddEdge("A", "B");
             graph.AddEdge("A", "C", 3.0);
-            graph.AddEdge("B", "C", 1.5);
+            graph.AddEdge("B", "C", 9.0);
+            graph.AddEdge("A", "D", 7.0);
 
-            Console.WriteLine("Вывод списка смежности:");
+
+            Console.WriteLine("Список смежности графа:");// Вывод списка смежности
             graph.PrintAdjacencyList();
 
-            // Удаление ребра
-            graph.RemoveEdge("A", "C");
 
-            Console.WriteLine("Вывод списка смежности после удаления ребра:");
+            graph.RemoveEdge("A", "B");
+            Console.WriteLine("после удаления ребра АВ:");// Удаление ребра
+            
             graph.PrintAdjacencyList();
 
-            //добавление ребра 
-            graph.AddEdge("C", "A", 4.0);
-            Console.WriteLine("Вывод списка смежности после добавления нового ребра:");
-            graph.PrintAdjacencyList();
+            //минимальный консольный интерфейс
+            while (true)
+            {
+                Console.WriteLine("\nМеню:");
+                Console.WriteLine("1. Добавить вершину");
+                Console.WriteLine("2. Удалить вершину");
+                Console.WriteLine("3. Добавить ребро");
+                Console.WriteLine("4. Удалить ребро");
+                Console.WriteLine("5. Показать список смежности");
+                Console.WriteLine("6. Выход");
+                Console.Write("Выберите опцию: ");
 
-            // Удаление вершины
-            graph.RemoveVertex("C");
+                var input = Console.ReadLine();
 
-            Console.WriteLine("Вывод списка смежности после удаления вершины:");
-            graph.PrintAdjacencyList();
+                switch (input)
+                {
+                    case "1":
+                        Console.Write("Введите имя вершины: ");
+                        var vertexToAdd = Console.ReadLine();
+                        graph.AddVertex(vertexToAdd);
+                        break;
+
+                    case "2":
+                        Console.Write("Введите имя вершины для удаления: ");
+                        var vertexToRemove = Console.ReadLine();
+                        graph.RemoveVertex(vertexToRemove);
+                        break;
+
+                    case "3":
+                        Console.Write("Введите начальную вершину: ");
+                        var fromVertex = Console.ReadLine();
+                        Console.Write("Введите конечную вершину: ");
+                        var toVertex = Console.ReadLine();
+                        Console.Write("Введите вес (по умолчанию 1.0): ");
+                        var weightInput = Console.ReadLine();
+                        double weight = string.IsNullOrWhiteSpace(weightInput) ? 1.0 : Convert.ToDouble(weightInput);
+                        graph.AddEdge(fromVertex, toVertex, weight);
+                        break;
+
+                    case "4":
+                        Console.Write("Введите начальную вершину: ");
+                        var fromEdge = Console.ReadLine();
+                        Console.Write("Введите конечную вершину: ");
+                        var toEdge = Console.ReadLine();
+                        graph.RemoveEdge(fromEdge, toEdge);
+                        break;
+
+                    case "5":
+                        Console.WriteLine("Список смежности:");
+                        graph.PrintAdjacencyList();
+                        break;
+
+                    case "6":
+                        return;
+
+                    default:
+                        Console.WriteLine("Неверный ввод. Пожалуйста, попробуйте снова.");
+                        break;
+                }
+            }
+
 
             // Сохранение в файл
-            graph.SaveToFile("graph.txt");
+            graph.SaveToFile(@"C:\Users\PC\Desktop\C#\tgraph1\Graph.txt");
 
             // Загрузка из файла
-            Graph<string> loadedGraph = new Graph<string>("graph.txt");
+            Graph<string> loadedGraph = new Graph<string>(@"C:\Users\PC\Desktop\C#\tgraph1\Graph.txt");
             loadedGraph.PrintAdjacencyList();
         }
     }
 }
-/*
-A: B 2.5, C 3.0
-B: A 2.5
-C: A 3.0
-
-graph2
-
-X: Y 1.0
-Y: X 1.0, Z 4.0
-Z: Y 4.0
-
-graph3
-
-P: P 5.0
-Q: R 2.0
-R: Q 2.0
-*/
