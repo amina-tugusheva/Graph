@@ -142,5 +142,59 @@ namespace gtaph0
                 Console.WriteLine();
             }
         }
+
+        //метод возвращающий степень вершины
+        public int GetVertexDegree(T vertex)
+        {
+            if (!adjacencyList.ContainsKey(vertex))
+            {
+                throw new ArgumentException($"Вершина {vertex} не существует в графе.");
+            }
+
+            // Для ориентированного графа
+            if (isDirected)
+            {
+                int inDegree = 0;
+                int outDegree = adjacencyList[vertex].Count;
+
+                // Подсчёт входящих рёбер
+                foreach (var v in adjacencyList)
+                {
+                    foreach (var edge in v.Value)
+                    {
+                        if (EqualityComparer<T>.Default.Equals(edge.Item1, vertex))
+                        {
+                            inDegree++;
+                        }
+                    }
+                }
+
+                return inDegree + outDegree; // Общая степень
+            }
+            else // Для неориентированного графа
+            {
+                return adjacencyList[vertex].Count; // Степень равна количеству соседей
+            }
+        }
+        //метод, выводящий вершины, не смежные с данной 
+        public List<T> GetNonAdjacentVertices(T vertex)
+        {
+            if (!adjacencyList.ContainsKey(vertex))
+            {
+                throw new ArgumentException($"Вершина {vertex} не существует в графе.");
+            }
+
+            var nonAdjacentVertices = new List<T>();
+
+            foreach (var v in adjacencyList.Keys)
+            {
+                if (!v.Equals(vertex) && !adjacencyList[vertex].Exists(edge => edge.Item1.Equals(v)))
+                {
+                    nonAdjacentVertices.Add(v);
+                }
+            }
+
+            return nonAdjacentVertices;
+        }
     }
 }
