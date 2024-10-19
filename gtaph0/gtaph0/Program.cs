@@ -11,33 +11,25 @@ namespace gtaph0
     {
         static void Main(string[] args)
         {
-            Console.Write("Выберите тип графа:\n1. Ориентированный\n2. Неориентированный\nВведите номер: ");
-            var graphTypeInput = Console.ReadLine();
-            bool isDirected = graphTypeInput == "1";
+            Console.WriteLine("nВыберите способ создания графа:\n1. Загрузить из файла\n2. Заполнить вручную");
+            var creationMethodInput = Console.ReadLine();
 
-            var graph = new Graph<string>(isDirected); // Создаем граф в зависимости от выбора пользователя
-            
-            // Добавление вершин
-            graph.AddVertex("A");
-            graph.AddVertex("B");
-            graph.AddVertex("C");
-            graph.AddVertex("D");
+            Graph<string> graph;
 
-            // Добавление рёбер
-            graph.AddEdge("A", "B");
-            graph.AddEdge("A", "C", 3.0);
-            graph.AddEdge("B", "C", 9.0);
-            graph.AddEdge("A", "D", 7.0);
+            if (creationMethodInput == "1")
+            {
+                //Console.Write("Введите путь к файлу: ");
+                var filePath = @"C:\Users\PC\Desktop\C#\tgraph1\Graph.txt";
+                graph = new Graph<string>(filePath);
+            }
+            else
+            {
+                Console.Write("Выберите тип графа:\n1. Ориентированный\n2. Неориентированный\nВведите номер: ");
+                var graphTypeInput = Console.ReadLine();
+                bool isDirected = graphTypeInput == "1";
 
-
-            Console.WriteLine("Список смежности графа:");// Вывод списка смежности
-            graph.PrintAdjacencyList();
-
-
-            graph.RemoveEdge("A", "B");
-            Console.WriteLine("после удаления ребра АВ:");// Удаление ребра
-            
-            graph.PrintAdjacencyList();
+                graph = new Graph<string>(isDirected); // Создаем граф в зависимости от выбора пользователя
+            }
 
             //минимальный консольный интерфейс
             while (true)
@@ -49,6 +41,8 @@ namespace gtaph0
                 Console.WriteLine("4. Удалить ребро");
                 Console.WriteLine("5. Показать список смежности");
                 Console.WriteLine("6. Выход");
+                Console.WriteLine("7. узнать степень вершины");
+                Console.WriteLine("8. для вершины найти не смежные с ней вершины");
                 Console.Write("Выберите опцию: ");
 
                 var input = Console.ReadLine();
@@ -94,19 +88,41 @@ namespace gtaph0
                     case "6":
                         return;
 
+                    case "7":
+                        Console.Write("Введите вершину для получения её степени: ");
+                        var vertexInput = Console.ReadLine();
+                        try
+                        {
+                            int degree = graph.GetVertexDegree(vertexInput);
+                            Console.WriteLine($"Степень вершины {vertexInput}: {degree}");
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        return;
+                    case "8":
+                        Console.Write("Введите вершину для получения не смежных вершин: ");
+                        var vertexInp = Console.ReadLine();
+
+                        try
+                        {
+                            var nonAdjacentVertices = graph.GetNonAdjacentVertices(vertexInp);
+                            Console.WriteLine($"Вершины, не смежные с {vertexInp}: {string.Join(", ", nonAdjacentVertices)}");
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        return;
                     default:
                         Console.WriteLine("Неверный ввод. Пожалуйста, попробуйте снова.");
                         break;
                 }
             }
-
-
+            
             // Сохранение в файл
             graph.SaveToFile(@"C:\Users\PC\Desktop\C#\tgraph1\Graph.txt");
-
-            // Загрузка из файла
-            Graph<string> loadedGraph = new Graph<string>(@"C:\Users\PC\Desktop\C#\tgraph1\Graph.txt");
-            loadedGraph.PrintAdjacencyList();
         }
     }
 }
