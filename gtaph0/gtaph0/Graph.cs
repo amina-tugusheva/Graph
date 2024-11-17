@@ -116,15 +116,38 @@ namespace gtaph0
                     var vertex = (T)Convert.ChangeType(parts[0].Trim(), typeof(T));
                     var edges = parts[1].Split(',');
 
+                    // Убедимся, что вершина добавлена в список, даже если у нее нет ребер
+                    if (!adjacencyList.ContainsKey(vertex))
+                    {
+                        adjacencyList[vertex] = new List<(T, double)>();
+                    }
+
                     foreach (var edge in edges)
                     {
                         var edgeParts = edge.Trim().Split(' ');
+                        if (edgeParts.Length == 0 || string.IsNullOrWhiteSpace(edgeParts[0])) continue; // Пропускаем пустые строки
+
                         var toVertex = (T)Convert.ChangeType(edgeParts[0], typeof(T));
                         double weight = edgeParts.Length > 1 ? Convert.ToDouble(edgeParts[1]) : 1.0;
 
-                        AddVertex(vertex);
-                        AddVertex(toVertex);
-                        AddEdge(vertex, toVertex, weight);
+                        if (!adjacencyList.ContainsKey(vertex))
+                        {
+                            adjacencyList[vertex] = new List<(T, double)>();
+                        }
+                        //AddVertex(vertex); // Убедимся, что вершина добавлена
+                        if (!adjacencyList.ContainsKey(toVertex))
+                        {
+                            adjacencyList[toVertex] = new List<(T, double)>();
+                        }
+                        //AddVertex(toVertex); // Убедимся, что конечная вершина добавлена
+
+                        adjacencyList[vertex].Add((toVertex, weight));
+                        // Если граф неориентированный, добавляем обратное ребро
+                        if (!isDirected)
+                        {
+                            adjacencyList[toVertex].Add((vertex, weight));
+                        }
+                        //AddEdge(vertex, toVertex, weight);
                     }
                 }
             }
